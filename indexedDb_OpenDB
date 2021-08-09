@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>my basket</title>
+</head>
+<body>
+    <script>
+        var NAMES = ['яйца', 'спагетти', 'лаврушка', 'картошка', 'рис', 'сельдерей', 
+        'авокадо', 'овсянка', 'рыба', 'хлеб', 'тыква', 'вода дистилят', 'сок яблочный', 
+        'помидоры', 'бананы', 'огурцы', 'гречка', 'хлеб', 'масло сливочное', 'масло подсолнечное',
+         'джем малиновый', 'консервы рыбные', 'творог', 'сметана', 'лук репчатый'];
+        var COLORS = ['green', 'yellow', 'black', 'purple', 'white', 'darkgreen', 'red',
+         'darkred', 'cyan', 'pink', 'orange', 'darkpink', 'lightblue', 'blue', 'darkblack'];
+         var goods = [];
+         var buy = [];
+
+         function createObjects () {
+
+             for ( let i = 0; i < 10; i++) {
+                 let newgood = new Object();
+                 newgood.name = NAMES[Math.floor(Math.random() * NAMES.length)];
+                 newgood.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+                 newgood.price = Math.floor(Math.random() * 1000 + 2);
+                 goods.push(newgood);
+             };
+         };
+
+         createObjects ();
+
+         console.log(goods);
+
+         //-----------------------------------------------
+            let db;
+            let openDb = indexedDB.open('firstDB', 1);                                           // 1.   отправляем запрос на открытие БД с именем rirstDB, ver 1. если бд с таким именем и версией отсутствуют, то мы переходим к обработчику onupgradeneeded
+            //console.dir(openDb);
+
+
+            openDb.onerror = function () {                                                      // в случае ошибки открытия бд возникнет событие в DOM, и выведет соответствующий результат 
+                console.log('ошибка при открытии БД' );
+                db = event.target.result;
+            };
+
+            openDb.onsuccess = function (event) {                                               //3. запускается обработчик событий который выполняет все манипуляции с самой бд
+                console.log('БД открыта! объекты добавлены');   
+                db = event.target.result;
+
+
+                addInDataBase ();
+            };
+
+            openDb.onupgradeneeded = function (event) {                                         // 2. запускается обработчик событий который создает/обновляет текущую версию бд 
+                console.log ('openDb is upgraded');
+                db = event.target.result;
+
+                if(!db.objectStoreNames.contains('products')) {                                 // проверяем на наличие в списке имен храгилищ объектов 'products' и если его нет то
+                    db.createObjectStore('products', {keyPath: 'name', autoIncrement: true});   // создаем его, и присваиваем ему ключевое поле 'name' с автоматическим увеличением его значения на 1
+                };
+            };
+
+       
+
+        //openDataBase ();
+
+        function addInDataBase () {
+            let transaction = db.transaction('products', 'readwrite');                          // запускаем транзакцию и в параметрах указываем её имя и указываем её тип в данном случае это запись данных
+            let products = transaction.objectStore('products');
+
+            let objPrice = {
+                chiken: '1ft',
+                price: '323',
+                cases: []
+            };
+            //objPrice.cases.push(goods[1]);
+            for (let i = 0; i < goods.length; i++) {
+                objPrice.cases.push(goods[i]);
+            };
+
+            let request = products.add(objPrice);
+            console.dir(request);
+
+            request.onsuccess = function () {
+                console.log('объект добавлен в бд');
+            };
+
+            request.onerror = function (event) {
+                console.log('произошла ошибка при добавлении объекта в бд', event.target.console.error);
+            };
+         };
+
+
+
+         function countPrice () {
+             let sum = 0;
+
+             for ( let i = 0; i < goods.length; i++) {
+                 sum += goods[i].price;
+             }
+             console.log('Цена товаров в корзине составляет: ' + sum + ' рублей');
+         };
+
+         countPrice();
+
+
+    </script>
+</body>
+</html>
