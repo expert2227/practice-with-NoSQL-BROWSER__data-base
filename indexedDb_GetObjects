@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>addStorage</title>
+</head>
+<body>
+    
+    <script>
+        var NAMES = ['яйца', 'спагетти', 'лаврушка', 'картошка', 'рис', 'сельдерей', 
+        'авокадо', 'овсянка', 'рыба', 'хлеб', 'тыква', 'вода дистилят', 'сок яблочный', 
+        'помидоры', 'бананы', 'огурцы', 'гречка', 'хлеб', 'масло сливочное', 'масло подсолнечное',
+         'джем малиновый', 'консервы рыбные', 'творог', 'сметана', 'лук репчатый'];
+        var COLORS = ['green', 'yellow', 'black', 'purple', 'white', 'darkgreen', 'red',
+         'darkred', 'cyan', 'pink', 'orange', 'darkpink', 'lightblue', 'blue', 'darkblack'];
+         var goods = [];
+         var buy = [];
+
+         function createObjects () {
+
+             for ( let i = 0; i < 10; i++) {
+                 let newgood = new Object();
+                 newgood.name = NAMES[Math.floor(Math.random() * NAMES.length)];
+                 newgood.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+                 newgood.price = Math.floor(Math.random() * 1000 + 2);
+                 goods.push(newgood);
+             };
+         };
+
+         createObjects ();
+
+         console.log(goods);
+
+         //-----------------------------------------------
+            let db;
+            let openDb = indexedDB.open('firstDB', 2);                                           
+            //console.dir(openDb);
+
+
+            openDb.onerror = function () {                                                       
+                console.log('ошибка при открытии БД' );
+                db = event.target.result;
+            };
+
+            openDb.onsuccess = function (event) {                                               // в случае успешного обновления бд срабатывает обработчик и в нем мы можем выбирать конкретные значения ключей
+                console.log('БД открыта! объекты добавлены');   
+                db = event.target.result;
+                
+               let objectStore = db.transaction('products').objectStore('products');
+               objectStore.get(1).onsuccess = function (event) {                                // метод позволяет выбирать одно значение ключа и возвращает его в консоль
+                   console.log(event.target.result.name, event.target.result.result);           
+               };
+                
+               objectStore.getAll().onsuccess = function (event) {                              // метод позволяет выбрать все значения хранящиеся в данном хранилище объектов
+                   console.log(event.target.result);
+               };
+            };
+
+            openDb.onupgradeneeded = function (event) {                                         // запускается обработчик событий который создает/обновляет текущую версию бд 
+                console.log ('openDb is upgraded');
+                db = event.target.result;
+            };
+                
+
+        function countPrice () {
+             let sum = 0;
+
+             for ( let i = 0; i < goods.length; i++) {
+                 sum += goods[i].price;
+             }
+             console.log('Цена товаров в корзине составляет: ' + sum + ' рублей');
+         };
+
+         countPrice();
+
+
+    </script>
+
+    
+</body>
+</html>
