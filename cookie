@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>cookie</title>
+	
+</head>
+<body>
+    
+    <script type="text/javascript">
+        function setCookie() {
+            //создаем временное значение cookie
+            console.log(document.cookie = "myCookie=addCookie")
+        };
+
+        function getCookie() {
+            console.log(document.cookie);
+        };
+		
+	</script>
+    <input type="button" value="Set cookie" onclick="setCookie()" />
+    <input type="button" value="Get cookie" onclick="getCookie()" />
+</body>
+</html>
