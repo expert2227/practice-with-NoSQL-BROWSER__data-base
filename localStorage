@@ -74,13 +74,13 @@
 
 		var check = function (answer, round) {
 			if (answer == QUESTIONS[round].correct) {
-				localStorage.setItem('player', ' is winner');     								// в зависимости от исхода игры браузер записывает значение в локальное хранилище
+				localStorage.setItem('player', ' is winner');     					// в зависимости от исхода игры браузер записывает значение в локальное хранилище
 				alert('Правильно!');
-				console.log(localStorage.getItem('player'));									// метод для получения значения ключа 
+				console.log(localStorage.getItem('player'));						// метод для получения значения ключа 
 				return true;
 			} else {
 				alert('НЕПРАВИЛЬНО!' + ' игрок правильно ответил на  ' + round + ' вопросов.');
-				localStorage.setItem('Our player', ' is loser');								// в зависимости от исхода игры браузер записывает значение в локальное хранилище
+				localStorage.setItem('Our player', ' is loser');					// в зависимости от исхода игры браузер записывает значение в локальное хранилище
 			
 				return false;
 			}
